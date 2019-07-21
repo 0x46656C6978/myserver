@@ -1,0 +1,1 @@
+docker exec -it kcboi95_web /bin/ash

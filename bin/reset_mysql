@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+RED='\033[0;31m'
+NC='\033[0m'
+
+echo -ne "${RED}Are you sure do you want to delete all database files (y/n)?:${NC} "
+read answer
+case ${answer} in
+	y|Y )
+		rm -rf data/mysql/*
+		echo "Done"
+	;;
+	* )
+		echo "Nothing happen"
+	;;
+esac
