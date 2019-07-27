@@ -4,7 +4,7 @@ services:
   # Database server
   dbserver:
       container_name: kcboi95_db
-      image: mariadb/server:10.3
+      image: mysql/mysql-server:8.0.13
       restart: always
       ports:
         - 3306:3306

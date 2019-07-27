@@ -8,10 +8,12 @@ RUN apk add \
     php5-apcu \
     php5-bcmath \
     php5-common \
+    php5-ctype \
     php5-curl \
     php5-dev \
     php5-fpm \
     php5-gd \
+    php5-iconv \
     php5-intl \
     php5-json \
     php5-mcrypt \
@@ -22,19 +24,21 @@ RUN apk add \
     php5-soap \
     php5-zip \
     php5-xml \
+    php5-xmlreader \
     php5-xmlrpc \
-    php5-xsl
-
-RUN apk add \
+    php5-xsl \
     php7 \
     php7-apcu \
     php7-bcmath \
     php7-cli \
+    php7-ctype \
     php7-common \
     php7-curl \
     php7-dev \
+    php7-fileinfo \
     php7-fpm \
     php7-gd \
+    php7-iconv \
     php7-intl \
     php7-json \
     php7-mbstring \
@@ -44,33 +48,23 @@ RUN apk add \
 	php7-phar \
     php7-opcache \
     php7-session \
+    php7-simplexml \
     php7-soap \
     php7-xdebug \
     php7-zip \
     php7-xml \
+    php7-xmlreader \
     php7-xmlrpc \
-    php7-xsl
+    php7-xmlwriter \
+    php7-xsl \
+    supervisor \
+    curl \
+    nginx \
+    nginx-mod-http-headers-more
 
-RUN apk add supervisor curl nginx nginx-mod-http-headers-more
-
-
-# Install ioncube for PHP
-COPY inc/ioncube /tmp/ioncube
-RUN cd /tmp/ && \
-    # Copy ioncube .so files to correct PHP version directory
-    cp ioncube/ioncube_loader_lin_5.6.so /usr/lib/php5/modules && \
-    chmod 755 /usr/lib/php5/modules/ioncube_loader_lin_5.6.so && \
-    cp ioncube/ioncube_loader_lin_7.1.so /usr/lib/php7/modules && \
-    chmod 755 /usr/lib/php7/modules/ioncube_loader_lin_7.1.so && \
-    # Remove ioncube directory
-    rm -Rf /tmp/ioncube
-
-
-# Create ini file for PHP to load ioncube at startup
-RUN cd /etc/php5/conf.d/ && echo "zend_extension=ioncube_loader_lin_5.6.so" >> 00-ioncube.ini && \
-    cd /etc/php7/conf.d/ && echo "zend_extension=ioncube_loader_lin_7.1.so" >> 00-ioncube.ini
-
-RUN rm -rf /tmp/*
+# Install composer
+RUN wget http://getcomposer.org/composer.phar -O /usr/local/bin/composer && \
+    chmod +x /usr/local/bin/composer
 
 # Configure nginx
 # Create nginx directory for nginx.pid file
@@ -94,7 +88,8 @@ COPY config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 RUN mkdir -p /var/www/html
 WORKDIR /var/www/html
 
-RUN rm -rf /var/cache/apk/*
+RUN rm -rf /var/cache/apk/* && \
+    rm -rf /tmp/*
 
 EXPOSE 80 443 9000
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
