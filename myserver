@@ -26,6 +26,7 @@ if [ -n $1 ]; then
     case $1 in
         "build")
             generate_docker_compose
+            generate_docker_file
             building_images
             ;;
 
