@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+# Define server root path
+SERVER_ROOT=$(cd "$(dirname "$0")" ; pwd)
+# Define server version
+VERSION="1.0"
+# Import functions
+source $SERVER_ROOT/server/functions.sh
+
+msg_success " __  __       ____                           " true
+msg_success "|  \/  |_   _/ ___|  ___ _ ____   _____ _ __ " true
+msg_success "| |\/| | | | \___ \ / _ \ '__\ \ / / _ \ '__|" true
+msg_success "| |  | | |_| |___) |  __/ |   \ V /  __/ |   " true
+msg_success "|_|  |_|\__, |____/ \___|_|    \_/ \___|_|   " true
+msg_success "        |___/                                " true
+
+
+# Initialize
+source $SERVER_ROOT/server/init.sh
+
+if [ -n $1 ]; then
+    # Store present working dir to cd back later
+    PASS_PWD=$PWD
+    # Change pwd
+    cd $SERVER_ROOT
+
+    case $1 in
+        "build")
+            generate_docker_compose
+#            building_images
+            ;;
+
+        "clean")
+            docker image prune
+            ;;
+
+        "db")
+            docker exec -it "${PREFIX}_db" bash -c "mysql -u$MYSQL_ROOT_USERNAME -p$MYSQL_ROOT_PASSWORD"
+            ;;
+
+        "down")
+            command_down
+            ;;
+
+        "reset-mysql")
+            command_reset_mysql
+            ;;
+
+        "restart")
+            docker-compose restart
+            ;;
+
+        "stop")
+            command_stop
+            ;;
+
+        "up")
+            generate_docker_compose
+            generate_docker_file
+#            command_up
+            ;;
+
+        "web")
+            docker exec -it "${PREFIX}_web" ash
+            ;;
+
+        "--version"|"-v")
+            echo "Version $VERSION"
+            ;;
+
+        "--help"|"-h")
+            print_help_page
+            ;;
+
+        *)
+            print_help_page
+            ;;
+    esac
+    cd $PASS_PWD
+fi

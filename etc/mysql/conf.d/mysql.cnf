@@ -9,3 +9,5 @@ innodb_log_file_size = 256M
 #innodb_read_io_threads = 64
 #innodb_write_io_threads = 64
 #innodb_io_capacity = 10000
+[client]
+loose-local-infile = 1
