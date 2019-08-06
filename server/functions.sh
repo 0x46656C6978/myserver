@@ -241,7 +241,7 @@ function building_images() {
     # Verbose off
     if [[ $VERBOSE -eq 0 ]]; then
         msg_normal "Start building images..."
-        docker-compose build --compress > logs/build.log 2>&1
+        docker-compose build > logs/build.log 2>&1
         if [[ $? -eq 0 ]]; then
             msg_success "Done" true
         else
@@ -250,7 +250,7 @@ function building_images() {
     # Verbose on
     else
         msg_normal "Start building images..." true
-        docker-compose build --compress
+        docker-compose build
     fi
 }
 #
