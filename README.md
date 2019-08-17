@@ -8,6 +8,6 @@ Want to know why? Read [this](https://forums.docker.com/t/connecting-to-containe
 ## How to use
 Open your terminal and run
 
-    ./server
+    ./myserver
     
 Cheers!
