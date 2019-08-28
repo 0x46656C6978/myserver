@@ -8,29 +8,6 @@ COPY inc /tmp/inc
 RUN ls -la /tmp
 # Install packages
 RUN apk add \
-    php5 \
-    php5-apcu \
-    php5-bcmath \
-    php5-common \
-    php5-ctype \
-    php5-curl \
-    php5-dev \
-    php5-fpm \
-    php5-gd \
-    php5-iconv \
-    php5-intl \
-    php5-json \
-    php5-mcrypt \
-    php5-mysql \
-    php5-mysqli \
-    php5-opcache \
-    php5-pdo_mysql \
-    php5-soap \
-    php5-zip \
-    php5-xml \
-    php5-xmlreader \
-    php5-xmlrpc \
-    php5-xsl \
     php7 \
     php7-apcu \
     php7-bcmath \
@@ -76,11 +53,6 @@ RUN echo "" && \
     # Configure php-fpm
     cp /tmp/etc/php7/fpm-pool.conf /etc/php7/php-fpm.d/www.conf && \
     cp /tmp/etc/php7/php.ini /etc/php7/conf.d/99.custom.ini && \
-    cp /tmp/etc/php5/fpm-pool.conf /etc/php5/php-fpm.conf && \
-    cp /tmp/etc/php5/php.ini /etc/php5/conf.d/99.custom.ini && \
-    # Setup xdebug for php5
-    cp /tmp/inc/php5_xdebug.so /usr/lib/php5/modules/xdebug.so && \
-    cd /etc/php5/conf.d/ && echo "zend_extension=xdebug.so" >> xdebug.ini && \
     # Add application
     mkdir -p /var/www/html && \
     # Clean cache
