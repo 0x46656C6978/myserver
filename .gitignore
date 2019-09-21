@@ -1,11 +1,11 @@
 .idea
 .vscode
+.DS_Store
 
 /htdocs
+
 /data/mysql
 !/data/mysql/.gitkeep
-
-.DS_Store
 
 /etc/nginx/conf.d/*
 !/etc/nginx/conf.d/default.conf
@@ -13,8 +13,8 @@
 /logs/*
 !/logs/.gitkeep
 
-/docker-compose.yml
+/etc/apache2/ssl/*
 
 !.gitkeep
-
+/docker-compose.yml
 /Dockerfile
