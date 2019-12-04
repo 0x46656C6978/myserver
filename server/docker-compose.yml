@@ -29,13 +29,14 @@ services:
     ports:
       - 80:80
       - 443:443
+      - 9000:9000
     depends_on:
       - dbserver
     volumes:
       - ./htdocs:/var/www/html:cached
       # Mount PHP configs
       - ./etc/php7/fpm-pool.conf:/etc/php7/php-fpm.d/www.conf
-      - ./etc/php7/php.ini:/etc/php7/conf.d/99.custom.ini
+      - ./etc/php7/php.ini:/etc/php7/conf.d/z.custom.ini
       # Mount Nginx config
       - ./etc/nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./etc/nginx/conf.d:/etc/nginx/conf.d

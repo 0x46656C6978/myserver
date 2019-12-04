@@ -1,11 +1,9 @@
 FROM alpine:3.7
-#LABEL Maintainer="Dat Nguyen <kcboi95@gmail.com>" \
-#      Description="Lightweight container with Nginx 1.14 & PHP-FPM 7.1 based on Alpine Linux."
+LABEL Maintainer="Dat Nguyen <kcboi95@gmail.com>" \
+      Description="Lightweight container with Apache & PHP-FPM 7.1 based on Alpine Linux."
 
-# Copy required files
-COPY etc /tmp/etc
 # Install packages
-RUN apk update && apk add \
+RUN apk add --no-cache \
     apache2 \
     apache2-proxy \
     apache2-ssl \
@@ -50,31 +48,30 @@ RUN apk update && apk add \
     musl-dev \
     nano \
     supervisor
-
 #    nginx \
 #    nginx-mod-http-headers-more
 
-RUN echo "" && \
-    pecl install apcu && \
-    pecl install apcu_bc && \
+
+RUN echo "" \
+&&  pecl install apcu \
+&&  pecl install apcu_bc \
     # Install composer
-    wget http://getcomposer.org/composer.phar -O /usr/local/bin/composer && \
-    chmod +x /usr/local/bin/composer && \
+&&  wget http://getcomposer.org/composer.phar -O /usr/local/bin/composer \
+&&  chmod +x /usr/local/bin/composer \
     # Configure nginx
     # Create nginx directory for nginx.pid file
-    mkdir -p /run/nginx && \
+&&  mkdir -p /run/nginx \
     # Create apache2 directory for httpd.pid file
-    mkdir -p /run/apache2 && \
-    # Configure php-fpm
-    cp /tmp/etc/php7/fpm-pool.conf /etc/php7/php-fpm.d/www.conf && \
-    cp /tmp/etc/php7/php.ini /etc/php7/conf.d/99.custom.ini && \
+&&  mkdir -p /run/apache2 \
     # Add application
-    mkdir -p /var/www/html && \
+&&  mkdir -p /var/www/html \
     # Clean cache
-    rm -rf /var/cache/apk/* && \
-    rm -rf /tmp/*
+&&  rm -rf /tmp/*
+
 
 WORKDIR /var/www/html
-
 EXPOSE 80 443 9000
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+#USER apache
+COPY /server/entrypoint.sh /entrypoint5.sh
+ENTRYPOINT ["/entrypoint5.sh"]
+#CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]

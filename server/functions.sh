@@ -222,7 +222,7 @@ function command_up {
     # Verbose off
     if [[ $VERBOSE -eq 0 ]]; then
         msg_normal "Starting containers..."
-        docker-compose up  -d --remove-orphans > logs/up.log 2>&1
+        docker-compose up -d --remove-orphans > logs/up.log 2>&1
         if [[ $? -eq 0 ]]; then
             msg_success "Done" true
         else
