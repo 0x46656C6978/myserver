@@ -69,3 +69,4 @@ WORKDIR /var/www/html
 EXPOSE 80 443 9000
 COPY /server/entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
