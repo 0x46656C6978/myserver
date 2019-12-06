@@ -47,10 +47,8 @@ RUN apk add --no-cache \
     make \
     musl-dev \
     nano \
-    supervisor
-#    nginx \
-#    nginx-mod-http-headers-more
-
+    supervisor \
+    vim
 
 RUN echo "" \
 &&  pecl install apcu \
@@ -58,20 +56,16 @@ RUN echo "" \
     # Install composer
 &&  wget http://getcomposer.org/composer.phar -O /usr/local/bin/composer \
 &&  chmod +x /usr/local/bin/composer \
-    # Configure nginx
-    # Create nginx directory for nginx.pid file
-&&  mkdir -p /run/nginx \
     # Create apache2 directory for httpd.pid file
 &&  mkdir -p /run/apache2 \
     # Add application
 &&  mkdir -p /var/www/html \
     # Clean cache
+&&  pecl clear-cache \
 &&  rm -rf /tmp/*
 
 
 WORKDIR /var/www/html
 EXPOSE 80 443 9000
-#USER apache
-COPY /server/entrypoint.sh /entrypoint5.sh
-ENTRYPOINT ["/entrypoint5.sh"]
-#CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+COPY /server/entrypoint.sh /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
