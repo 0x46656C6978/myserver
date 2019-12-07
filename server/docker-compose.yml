@@ -47,10 +47,3 @@ services:
       # Mount supervisor config
       - ./etc/supervisor/conf.d/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
     network_mode: bridge
-
-  adminer:
-    container_name: {{PREFIX}}_adminer
-    image: adminer
-    restart: always
-    ports:
-      - 8080:8080
