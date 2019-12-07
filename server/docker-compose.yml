@@ -7,7 +7,7 @@ services:
   # Database server
   dbserver:
     container_name: {{PREFIX}}_db
-    image: mysql/mysql-server:5.7
+    image: mariadb:10.4
     restart: always
     ports:
       - 3306:3306
