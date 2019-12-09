@@ -4,10 +4,11 @@
 #
 function replace_variable_in_file {
 #    cp -f $1 $2
-    sed -e "s/{{PREFIX}}/$PREFIX/" \
-        -e "s/{{MYSQL_ROOT_PASSWORD}}/$MYSQL_ROOT_PASSWORD/" \
-        -e "s/{{MYSQL_DATABASE}}/$MYSQL_DATABASE/" \
-        -e "s/{{MYSQL_ROOT_USERNAME}}/$MYSQL_ROOT_USERNAME/" \
+    sed -e "s#{{PREFIX}}#$PREFIX#" \
+        -e "s#{{MYSQL_ROOT_PASSWORD}}#$MYSQL_ROOT_PASSWORD#" \
+        -e "s#{{MYSQL_DATABASE}}#$MYSQL_DATABASE#" \
+        -e "s#{{MYSQL_ROOT_USERNAME}}#$MYSQL_ROOT_USERNAME#" \
+	-e "s#{{WEB_ROOT}}#$WEB_ROOT#" \
         $1 > $2
 }
 #
