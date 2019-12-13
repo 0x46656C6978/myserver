@@ -20,7 +20,7 @@ services:
       - ./data/mysql:/var/lib/mysql
       - ./etc/mysql/conf.d/mysql.cnf:/etc/mysql/conf.d/config-file.cnf
       - {{WEB_ROOT}}:/var/www/html
-    network_mode: bridge
+    network_mode: host
 
   # Web server
   web:
@@ -47,4 +47,6 @@ services:
       - ./etc/apache2/conf.d/vhost.conf:/etc/apache2/conf.d/vhost.conf
       # Mount supervisor config
       - ./etc/supervisor/conf.d/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
-    network_mode: bridge
+    network_mode: host
+
+
