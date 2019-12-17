@@ -20,7 +20,7 @@ services:
       - ./data/mysql:/var/lib/mysql
       - ./etc/mysql/conf.d/mysql.cnf:/etc/mysql/conf.d/config-file.cnf
       - {{WEB_ROOT}}:/var/www/html
-    network_mode: host
+    network_mode: bridge
 
   # Web server
   web:
@@ -33,20 +33,28 @@ services:
       - 9000:9000
     depends_on:
       - dbserver
+      - redis
     volumes:
       - {{WEB_ROOT}}:/var/www/html:cached
       # Mount PHP configs
       - ./etc/php7/fpm-pool.conf:/etc/php7/php-fpm.d/www.conf
       - ./etc/php7/php.ini:/etc/php7/conf.d/z.custom.ini
-      # Mount Nginx config
-      - ./etc/nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./etc/nginx/conf.d:/etc/nginx/conf.d
       # Mount Apache2 config
       - {{WEB_ROOT}}:/var/www/localhost/htdocs:cached
       - ./etc/apache2/ssl:/etc/apache2/ssl
       - ./etc/apache2/conf.d/vhost.conf:/etc/apache2/conf.d/vhost.conf
       # Mount supervisor config
       - ./etc/supervisor/conf.d/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
-    network_mode: host
+    network_mode: bridge
 
-
+  # Redis
+  redis:
+    container_name: {{PREFIX}}_redis
+    image: 'redis:5.0.7-alpine'
+    restart: always
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - ./data/redis:/data
+    entrypoint: redis-server --appendonly yes
+    network_mode: bridge

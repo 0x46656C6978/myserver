@@ -32,18 +32,19 @@ RUN apk add --no-cache \
     php7-mysqli \
     php7-pdo_mysql \
     php7-pear \
-	php7-phar \
+    php7-phar \
     php7-opcache \
     php7-session \
     php7-simplexml \
     php7-soap \
+    php7-tokenizer \
     php7-xdebug \
-    php7-zip \
     php7-xml \
     php7-xmlreader \
     php7-xmlrpc \
     php7-xmlwriter \
     php7-xsl \
+    php7-zip \
     make \
     musl-dev \
     nano \
@@ -59,12 +60,13 @@ RUN echo "" \
     # Create apache2 directory for httpd.pid file
 &&  mkdir -p /run/apache2 \
     # Add application
-&&  mkdir -p /var/www/html \
+&&  mkdir -m 777 /var/www/html \
+#&&  chown -R apache:apache /var/www/html \
     # Clean cache
 &&  pecl clear-cache \
 &&  rm -rf /tmp/*
 
-
+#USER apache
 WORKDIR /var/www/html
 EXPOSE 80 443 9000
 COPY /server/entrypoint.sh /entrypoint.sh
