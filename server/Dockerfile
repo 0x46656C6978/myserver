@@ -34,6 +34,7 @@ RUN apk add --no-cache \
     php7-openssl \
     php7-pdo_mysql \
     php7-pear \
+    php7-pecl-redis \
     php7-phar \
     php7-session \
     php7-simplexml \
