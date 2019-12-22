@@ -1,4 +1,4 @@
-FROM alpine:3.7
+FROM alpine:3.10
 LABEL Maintainer="Dat Nguyen <kcboi95@gmail.com>" \
       Description="Lightweight container with Apache & PHP-FPM 7.1 based on Alpine Linux."
 
@@ -28,12 +28,13 @@ RUN apk add --no-cache \
     php7-intl \
     php7-json \
     php7-mbstring \
-    php7-mcrypt \
+#    php7-mcrypt \
     php7-mysqli \
+    php7-opcache \
+    php7-openssl \
     php7-pdo_mysql \
     php7-pear \
     php7-phar \
-    php7-opcache \
     php7-session \
     php7-simplexml \
     php7-soap \
