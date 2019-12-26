@@ -43,6 +43,8 @@ services:
       - {{WEB_ROOT}}:/var/www/localhost/htdocs:cached
       - ./etc/apache2/ssl:/etc/apache2/ssl
       - ./etc/apache2/conf.d/vhost.conf:/etc/apache2/conf.d/vhost.conf
+      # Mount Nginx config
+      - ./etc/nginx/conf.d:/etc/nginx/conf.d
       # Mount supervisor config
       - ./etc/supervisor/conf.d/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
     network_mode: bridge

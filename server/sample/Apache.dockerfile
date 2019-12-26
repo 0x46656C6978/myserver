@@ -4,13 +4,16 @@ LABEL Maintainer="Dat Nguyen <kcboi95@gmail.com>" \
 
 # Install packages
 RUN apk add --no-cache \
+    apache2 \
+    apache2-proxy \
+    apache2-ssl \
+    apache2-utils \
     bash \
     curl \
     gcc \
     make \
     musl-dev \
     nano \
-    nginx \
     openssl \
     php7 \
     php7-apache2 \
@@ -53,11 +56,12 @@ RUN echo "" \
     # Install composer
 &&  wget http://getcomposer.org/composer.phar -O /usr/local/bin/composer \
 &&  chmod +x /usr/local/bin/composer \
-    # Create nginx directory for nginx.pid file
-&&  mkdir -p /run/nginx/ \
+    # Create apache2 directory for httpd.pid file
+&&  mkdir -p /run/apache2 \
     # Add application
-&&  mkdir -m 777 /var/www/html \
+&&  chown -R apache:apache /var/www/html \
     # Clean cache
+#&&  pecl clear-cache \
 &&  rm -rf /tmp/*
 
 #USER apache
