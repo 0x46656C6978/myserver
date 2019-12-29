@@ -53,6 +53,8 @@ RUN apk add --no-cache \
     vim
 
 RUN echo "" \
+&&  pecl install apcu \
+&&  pecl install apcu_bc \
     # Install composer
 &&  wget http://getcomposer.org/composer.phar -O /usr/local/bin/composer \
 &&  chmod +x /usr/local/bin/composer \
