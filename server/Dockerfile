@@ -53,8 +53,10 @@ RUN echo "" \
 &&  pecl install apcu \
 &&  pecl install apcu_bc \
     # Install composer
-&&  wget http://getcomposer.org/composer.phar -O /usr/local/bin/composer \
+&&  wget https://getcomposer.org/download/1.10.5/composer.phar -O /usr/local/bin/composer \
 &&  chmod +x /usr/local/bin/composer \
+&&  composer global require hirak/prestissimo \
+&&  composer clearcache \
     # Create nginx directory for nginx.pid file
 &&  mkdir -p /run/nginx/ \
     # Add application
