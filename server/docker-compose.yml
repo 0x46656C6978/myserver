@@ -1,6 +1,8 @@
 # This file is auto-generated and overwritten each time you start-up containers.
-# If you want to update this file, add your custom config to "$SERVER_ROOT/.server/docker-compose.yml" instead.
+# If you want to update this file, add your custom config to "$SERVER_ROOT/server/docker-compose.yml" instead.
 # You can add your custom variables via config.ini and use them in here.
+# ----------
+# If you're using Windows or MacOS, you can switch network_mode to bridge instead
 version: "3.1"
 
 services:
@@ -20,7 +22,8 @@ services:
       - ./data/mysql:/var/lib/mysql
       - ./etc/mysql/conf.d/mysql.cnf:/etc/mysql/conf.d/config-file.cnf
       - {{WEB_ROOT}}:/var/www/html
-    network_mode: bridge
+    network_mode: host
+    # network_mode: bridge
 
   # Web server
   web:
@@ -33,7 +36,7 @@ services:
       - 9000:9000
     depends_on:
       - dbserver
-      - redis
+      # - redis
     volumes:
       - {{WEB_ROOT}}:/var/www/html:cached
       # Mount PHP configs
@@ -47,16 +50,29 @@ services:
       - ./etc/nginx/conf.d:/etc/nginx/conf.d
       # Mount supervisor config
       - ./etc/supervisor/conf.d/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
-    network_mode: bridge
+    network_mode: host
+    # network_mode: bridge
 
   # Redis
-  redis:
-    container_name: {{PREFIX}}_redis
-    image: 'redis:5.0.7-alpine'
-    restart: always
-    environment:
-      - ALLOW_EMPTY_PASSWORD=yes
-    volumes:
-      - ./data/redis:/data
-    entrypoint: redis-server --appendonly yes
-    network_mode: bridge
+  # redis:
+  #   container_name: {{PREFIX}}_redis
+  #   image: 'redis:5.0.7-alpine'
+  #   restart: always
+  #   environment:
+  #     - ALLOW_EMPTY_PASSWORD=yes
+  #   volumes:
+  #     - ./data/redis:/data
+  #   entrypoint: redis-server --appendonly yes
+  #   network_mode: host
+  #   network_mode: bridge
+
+  # # Message queue
+  # message_queue:
+  #   container_name: {{PREFIX}}_message_queue
+  #   image: 'rabbitmq:3.8.2-management-alpine'
+  #   restart: always
+  #   environment:
+  #     - RABBITMQ_DEFAULT_USER=rabbitmq
+  #     - RABBITMQ_DEFAULT_PASS=rabbitmq
+  #   network_mode: host
+  #   network_mode: bridge
