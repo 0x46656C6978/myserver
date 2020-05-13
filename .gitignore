@@ -4,8 +4,17 @@
 
 /htdocs
 
+/data/minio
+!/data/minio/.gitkeep
+
+/data/mongo
+!/data/mongo/.gitkeep
+
 /data/mysql
 !/data/mysql/.gitkeep
+
+/data/redis
+!/data/redis/.gitkeep
 
 /etc/nginx/conf.d/*
 !/etc/nginx/conf.d/default.conf
