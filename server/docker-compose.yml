@@ -9,7 +9,7 @@ services:
   # Database server
   dbserver:
     container_name: {{PREFIX}}_db
-    image: mariadb:10.4
+    image: mysql:5.7
     restart: always
     ports:
       - 3306:3306
@@ -22,8 +22,8 @@ services:
       - ./data/mysql:/var/lib/mysql
       - ./etc/mysql/conf.d/mysql.cnf:/etc/mysql/conf.d/config-file.cnf
       - {{WEB_ROOT}}:/var/www/html
-    network_mode: host
-    # network_mode: bridge
+    # network_mode: host
+    network_mode: bridge
 
   # Web server
   web:
@@ -50,21 +50,73 @@ services:
       - ./etc/nginx/conf.d:/etc/nginx/conf.d
       # Mount supervisor config
       - ./etc/supervisor/conf.d/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
-    network_mode: host
-    # network_mode: bridge
+    # network_mode: host
+    network_mode: bridge
 
   # Redis
-  # redis:
-  #   container_name: {{PREFIX}}_redis
-  #   image: 'redis:5.0.7-alpine'
-  #   restart: always
-  #   environment:
-  #     - ALLOW_EMPTY_PASSWORD=yes
-  #   volumes:
-  #     - ./data/redis:/data
-  #   entrypoint: redis-server --appendonly yes
-  #   network_mode: host
-  #   network_mode: bridge
+  redis:
+    container_name: {{PREFIX}}_redis
+    image: 'redis:5.0.7-alpine'
+    restart: always
+    ports:
+      - 6379:6379
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - ./data/redis:/data
+    entrypoint: redis-server --appendonly yes
+    # network_mode: host
+    network_mode: bridge
+
+  # MongoDB
+  mongo:
+    container_name: {{PREFIX}}_mongo
+    image: mongo
+    restart: unless-stopped
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: supersecret
+      MONGO_INITDB_DATABASE: app
+    volumes:
+      - ./data/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - ./data/mongo:/data/db
+    # network_mode: host
+    network_mode: bridge
+
+  # Mongo Express
+  mongo-express:
+    container_name: {{PREFIX}}_mongo_express
+    image: mongo-express
+    restart: unless-stopped
+    ports:
+      - 8082:8081
+    depends_on:
+      - mongo
+    links:
+      - "mongo"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: supersecret
+    # network_mode: host
+    network_mode: bridge
+
+  # MinIO (AWS S3 alternative)
+  minio:
+    container_name: {{PREFIX}}_minio
+    image: minio/minio
+    volumes:
+      - ./data/minio/:/data
+    ports:
+      - 9003:9000
+    environment:
+      - MINIO_ACCESS_KEY=app
+      - MINIO_SECRET_KEY=secretsecret
+      - MINIO_REGION=us-west-2
+    command: server /data
+    # network_mode: host
+    network_mode: bridge
 
   # # Message queue
   # message_queue:
