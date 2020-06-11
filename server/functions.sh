@@ -30,7 +30,6 @@ function quit {
 }
 
 source $SERVER_ROOT/server/functions/messages.sh
-source $SERVER_ROOT/server/functions/generator.sh
 source $SERVER_ROOT/server/functions/commands.sh
 
 #
@@ -96,8 +95,8 @@ function get_os_name() {
 
 
 # Export the vars in config.ini into your shell
-if [ ! -f $SERVER_ROOT/myserver.ini ]; then
-    msg_error "Couldn't found myserver.ini in $SERVER_ROOT" true
+if [ ! -f $SERVER_ROOT/.env ]; then
+    msg_error "Couldn't found .env file in $SERVER_ROOT" true
     quit
 fi
-export $(egrep -v '^#' $SERVER_ROOT/myserver.ini | xargs)
+export $(egrep -v '^#' $SERVER_ROOT/.env | xargs)
