@@ -33,7 +33,7 @@ if [ -n $1 ]; then
             ;;
 
         "db")
-            docker exec -it "${PREFIX}_db" bash -c "mysql -u$MYSQL_ROOT_USERNAME -p$MYSQL_ROOT_PASSWORD"
+            docker exec -it "${PREFIX}_mysql8" bash -c "mysql -u$MYSQL_ROOT_USERNAME -p$MYSQL_ROOT_PASSWORD"
             ;;
 
         "down")
