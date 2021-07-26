@@ -33,7 +33,7 @@ if [ -n $1 ]; then
             ;;
 
         "db")
-            docker exec -it "${PREFIX}_db" bash -c "mysql -u$MYSQL_ROOT_USERNAME -p$MYSQL_ROOT_PASSWORD"
+            docker exec -it "${PREFIX}_mysql_57" bash -c "mysql -u$MYSQL_ROOT_USERNAME -p$MYSQL_ROOT_PASSWORD"
             ;;
 
         "down")
@@ -57,7 +57,7 @@ if [ -n $1 ]; then
             ;;
 
         "web")
-            docker exec -it "${PREFIX}_web" ash
+            docker exec -it "${PREFIX}_nginx" ash
             ;;
 
         "--version"|"-v")

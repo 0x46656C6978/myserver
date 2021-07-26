@@ -6,125 +6,125 @@
 version: "3.1"
 
 services:
-  # Database server
-  dbserver:
-    container_name: ${PREFIX}_db
-    image: mysql:5.6.23
+
+  # mysql56:
+  #   container_name: ${PREFIX}_mysql_56
+  #   image: mysql:5.6.23
+  #   restart: always
+  #   ports:
+  #     - 33061:3306
+  #   command: mysqld --default-authentication-plugin=mysql_native_password --character-set-server=utf8 --collation-server=utf8_general_ci
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+  #     MYSQL_DATABASE: ${MYSQL_DATABASE}
+  #   user: ${MYSQL_ROOT_USERNAME}
+  #   volumes:
+  #     - ./data/mysql/5.6:/var/lib/mysql
+  #     # - ./etc/mysql/conf.d/mysql.cnf:/etc/mysql/conf.d/config-file.cnf
+  #     - ${WEB_ROOT}:/var/www/html
+  #   network_mode: bridge
+
+
+  mysql57:
+    container_name: ${PREFIX}_mysql_57
+    image: mysql:5.7.33
     restart: always
     ports:
-      - 3306:3306
+      - 33062:3306
     command: mysqld --default-authentication-plugin=mysql_native_password --character-set-server=utf8 --collation-server=utf8_general_ci
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
     user: ${MYSQL_ROOT_USERNAME}
     volumes:
-      - ./data/mysql:/var/lib/mysql
-      - ./etc/mysql/conf.d/mysql.cnf:/etc/mysql/conf.d/config-file.cnf
+      - ./data/mysql/5.7:/var/lib/mysql
+      # - ./etc/mysql/conf.d/mysql.cnf:/etc/mysql/conf.d/config-file.cnf
       - ${WEB_ROOT}:/var/www/html
-    # network_mode: host
     network_mode: bridge
 
-  # Web server
-  web:
-    container_name: ${PREFIX}_web
-    build: .
+
+  php73:
+    container_name: ${PREFIX}_php73
+    build: ./dockerfiles/php7.3
     restart: always
     ports:
-      - 80:80
-      - 443:443
-      - 9000:9000
-    depends_on:
-      - dbserver
-      # - redis
+      - 9090:9000
     volumes:
       - ${WEB_ROOT}:/var/www/html:cached
       # Mount PHP configs
       - ./etc/php7/fpm-pool.conf:/etc/php7/php-fpm.d/www.conf
       - ./etc/php7/php.ini:/etc/php7/conf.d/z.custom.ini
-      # Mount Apache2 config
-      - ${WEB_ROOT}:/var/www/localhost/htdocs:cached
-      - ./etc/apache2/ssl:/etc/apache2/ssl
-      - ./etc/apache2/conf.d/vhost.conf:/etc/apache2/conf.d/vhost.conf
-      # Mount Nginx config
-      - ./etc/nginx/conf.d:/etc/nginx/conf.d
-      # Mount supervisor config
-      - ./etc/supervisor/conf.d/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
-    # network_mode: host
     network_mode: bridge
 
-  # Redis
+
+  php56:
+    container_name: ${PREFIX}_php56
+    build: ./dockerfiles/php5.6
+    restart: always
+    ports:
+      - 9091:9000
+    volumes:
+      - ${WEB_ROOT}:/var/www/html:cached
+    network_mode: bridge
+
+
+  nginx:
+    container_name: ${PREFIX}_nginx
+    image: nginx:1.18.0-alpine
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ${WEB_ROOT}:/var/www/html:cached
+      # Mount Nginx config
+      - ./etc/nginx/conf.d:/etc/nginx/conf.d
+      - ./etc/ssl:/etc/nginx/ssl
+    links:
+      - php73
+      - php56
+    depends_on:
+      - php73
+      - php56
+    network_mode: bridge
+
+
   redis:
     container_name: ${PREFIX}_redis
-    image: 'redis:5.0.7-alpine'
+    image: redis:5.0.7-alpine
     restart: always
     ports:
       - 6379:6379
     environment:
-      - ALLOW_EMPTY_PASSWORD=yes
+      ALLOW_EMPTY_PASSWORD: "yes"
     volumes:
       - ./data/redis:/data
     entrypoint: redis-server --appendonly yes
-    # network_mode: host
     network_mode: bridge
 
-  # MongoDB
-  mongo:
-    container_name: ${PREFIX}_mongo
-    image: mongo
-    restart: unless-stopped
-    ports:
-      - 27017:27017
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: supersecret
-      MONGO_INITDB_DATABASE: app
-    volumes:
-      - ./data/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
-      - ./data/mongo:/data/db
-    # network_mode: host
-    network_mode: bridge
 
-  # Mongo Express
-  mongo-express:
-    container_name: ${PREFIX}_mongo_express
-    image: mongo-express
-    restart: unless-stopped
-    ports:
-      - 8082:8081
-    depends_on:
-      - mongo
-    links:
-      - "mongo"
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: supersecret
-    # network_mode: host
-    network_mode: bridge
-
-  # MinIO (AWS S3 alternative)
-  minio:
-    container_name: ${PREFIX}_minio
-    image: minio/minio
-    volumes:
-      - ./data/minio/:/data
-    ports:
-      - 9003:9000
-    environment:
-      - MINIO_ACCESS_KEY=app
-      - MINIO_SECRET_KEY=secretsecret
-      - MINIO_REGION=us-west-2
-    command: server /data
-    # network_mode: host
-    network_mode: bridge
-
-  # # Message queue
-  # message_queue:
-  #   container_name: ${PREFIX}_message_queue
-  #   image: 'rabbitmq:3.8.2-management-alpine'
-  #   restart: always
+  # minio:
+  #   container_name: ${PREFIX}_minio
+  #   image: minio/minio
+  #   volumes:
+  #     - ./data/minio/:/data
+  #   ports:
+  #     - 9003:9000
   #   environment:
-  #     - RABBITMQ_DEFAULT_USER=rabbitmq
-  #     - RABBITMQ_DEFAULT_PASS=rabbitmq
-  #   network_mode: host
+  #     MINIO_ACCESS_KEY: "app"
+  #     MINIO_SECRET_KEY: "secretsecret"
+  #     MINIO_REGION: "us-west-2"
+  #   command: server /data
   #   network_mode: bridge
+
+
+  postgres13:
+    container_name: ${PREFIX}_postgres13
+    image: postgres:13-alpine
+    volumes:
+      - ./data/postgres/13:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}

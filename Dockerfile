@@ -38,9 +38,11 @@ RUN apk add --no-cache \
     php7-opcache \
     php7-openssl \
     php7-pdo_mysql \
+    php7-pdo_pgsql \
     php7-pear \
     php7-pecl-redis \
     php7-phar \
+    php7-pgsql \
     php7-session \
     php7-simplexml \
     php7-soap \
@@ -57,8 +59,8 @@ RUN apk add --no-cache \
     vim
 
 RUN echo "" \
-&& pecl install apcu \
-&& pecl install apcu_bc \
+#&& pecl install apcu \
+#&& pecl install apcu_bc \
 && pecl install mongodb \
    # Install composer
 && wget https://getcomposer.org/download/1.10.5/composer.phar -O /usr/local/bin/composer \
